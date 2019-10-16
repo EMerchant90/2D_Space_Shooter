@@ -41,6 +41,8 @@ public class Player : MonoBehaviour
     private float _speed = 5.0f;
 
     private UIManager _uiManager;
+    private GameManager _gameManager;
+    private SpawnManager _spawnManager;
 
 	// Use this for initialization
 	private void Start () 
@@ -54,7 +56,16 @@ public class Player : MonoBehaviour
         {
             _uiManager.UpdateLives(lives);
         }
-	}
+
+        _gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+
+        _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>();
+
+        if (_spawnManager != null)
+        {
+            _spawnManager.StartSpawnRoutines();
+        }
+    }
 	
 	// Update is called once per frame
 	private void Update () 
@@ -148,6 +159,8 @@ public class Player : MonoBehaviour
         if (lives < 1)
         {
             Instantiate(_playerExplosionPrefab, transform.position, Quaternion.identity);
+            _gameManager.gameOver = true;
+            _uiManager.ShowTitleScreen();
             Destroy(this.gameObject);
         }
         //if lives < 1 (meaning 0)
